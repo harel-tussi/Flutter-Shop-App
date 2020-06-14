@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 class ProductItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    print("product re builds");
     final product = Provider.of<Product>(context, listen: false);
     final cart = Provider.of<Cart>(context, listen: false);
     return ClipRRect(
@@ -43,6 +42,21 @@ class ProductItem extends StatelessWidget {
             icon: Icon(Icons.shopping_cart),
             onPressed: () {
               cart.addItem(product.id, product.price, product.title);
+              Scaffold.of(context).hideCurrentSnackBar();
+              Scaffold.of(context).showSnackBar(SnackBar(
+                content: Text(
+                  "Item added to cart",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                ),
+                action: SnackBarAction(
+                  label: "UNDO",
+                  onPressed: () {
+                    cart.removeSingleItem(product.id);
+                  },
+                ),
+                backgroundColor: Colors.green,
+                duration: Duration(seconds: 4),
+              ));
             },
             color: Theme.of(context).accentColor,
           ),
